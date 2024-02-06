@@ -89,6 +89,6 @@ defmodule ReqGitHubPaginate do
     {request, struct!(response, headers: headers)}
   end
 
-  def parse_link_header({request, %Req.Response{headers: %{"link" => _other}} = response}),
-    do: {request, response}
+  def parse_link_header(other),
+    do: other
 end
