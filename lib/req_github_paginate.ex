@@ -15,18 +15,17 @@ defmodule ReqGitHubPaginate do
 
   def attach(%Req.Request{} = request, options \\ []) do
     request
-    |> Req.Request.register_options([:pagination_filter, :keep_original_link])
+    |> Req.Request.register_options([:pagination_transform, :keep_original_link])
     |> Req.Request.merge_options(options)
     |> Req.Request.append_response_steps(parse_link_headers: &parse_link_headers/1)
   end
 
   def parse_link_headers(
-        {request, %Req.Response{headers: %{"link" => [links_string]} = headers} = response},
-        opts \\ []
+        {request, %Req.Response{headers: %{"link" => [links_string]} = headers} = response}
       )
       when is_binary(links_string) do
-    keep_original_link = Keyword.get(opts, :keep_original_link, false)
-    pagination_transform = Keyword.get(opts, :pagination_transform, fn link -> link end)
+    keep_original_link = Map.get(request.options, :keep_original_link, false)
+    pagination_transform = Map.get(request.options, :pagination_transform, fn link -> link end)
 
     unless is_boolean(keep_original_link),
       do:
