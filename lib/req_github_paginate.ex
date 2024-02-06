@@ -25,14 +25,14 @@ defmodule ReqGitHubPaginate do
         opts \\ []
       )
       when is_binary(links_string) do
-    keep_original_links = Keyword.get(opts, :keep_original_links, false)
+    keep_original_link = Keyword.get(opts, :keep_original_link, false)
     pagination_transform = Keyword.get(opts, :pagination_transform, fn link -> link end)
 
-    unless is_boolean(keep_original_links),
+    unless is_boolean(keep_original_link),
       do:
         raise(
           ArgumentError,
-          "Argument `:keep_original_links` must be a boolean, got #{inspect(keep_original_links)}"
+          "Argument `:keep_original_link` must be a boolean, got #{inspect(keep_original_link)}"
         )
 
     unless is_function(pagination_transform, 1),
@@ -81,7 +81,7 @@ defmodule ReqGitHubPaginate do
       end)
 
     headers =
-      if keep_original_links do
+      if keep_original_link do
         Map.put_new(headers, "parsed_link", links)
       else
         Map.put(headers, "link", links)
